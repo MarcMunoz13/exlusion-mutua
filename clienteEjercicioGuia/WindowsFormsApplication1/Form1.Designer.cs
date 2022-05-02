@@ -29,9 +29,10 @@
         private void InitializeComponent()
         {
             this.label2 = new System.Windows.Forms.Label();
-            this.Fecha = new System.Windows.Forms.TextBox();
+            this.Consulta = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.SumaDuracion = new System.Windows.Forms.RadioButton();
             this.button4 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.Nick = new System.Windows.Forms.Label();
@@ -55,19 +56,19 @@
             this.label2.TabIndex = 1;
             this.label2.Text = "Fecha (DD-MM-AAAA):";
             // 
-            // Fecha
+            // Consulta
             // 
-            this.Fecha.ForeColor = System.Drawing.Color.LightCyan;
-            this.Fecha.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.Fecha.Location = new System.Drawing.Point(307, 173);
-            this.Fecha.Name = "Fecha";
-            this.Fecha.Size = new System.Drawing.Size(164, 20);
-            this.Fecha.TabIndex = 3;
-            this.Fecha.TextChanged += new System.EventHandler(this.Fecha_TextChanged);
+            this.Consulta.ForeColor = System.Drawing.Color.LightCyan;
+            this.Consulta.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.Consulta.Location = new System.Drawing.Point(307, 173);
+            this.Consulta.Name = "Consulta";
+            this.Consulta.Size = new System.Drawing.Size(164, 20);
+            this.Consulta.TabIndex = 3;
+            this.Consulta.TextChanged += new System.EventHandler(this.Fecha_TextChanged);
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(307, 233);
+            this.button2.Location = new System.Drawing.Point(307, 286);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 5;
@@ -78,6 +79,7 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.groupBox1.Controls.Add(this.SumaDuracion);
             this.groupBox1.Controls.Add(this.button4);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.Nick);
@@ -86,14 +88,26 @@
             this.groupBox1.Controls.Add(this.DimeJugadores);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.button2);
-            this.groupBox1.Controls.Add(this.Fecha);
+            this.groupBox1.Controls.Add(this.Consulta);
             this.groupBox1.Location = new System.Drawing.Point(12, 73);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(615, 278);
+            this.groupBox1.Size = new System.Drawing.Size(717, 419);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Peticion";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // SumaDuracion
+            // 
+            this.SumaDuracion.AutoSize = true;
+            this.SumaDuracion.Location = new System.Drawing.Point(307, 222);
+            this.SumaDuracion.Name = "SumaDuracion";
+            this.SumaDuracion.Size = new System.Drawing.Size(175, 17);
+            this.SumaDuracion.TabIndex = 18;
+            this.SumaDuracion.TabStop = true;
+            this.SumaDuracion.Text = "Duración total partidas ganadas";
+            this.SumaDuracion.UseVisualStyleBackColor = true;
+            this.SumaDuracion.CheckedChanged += new System.EventHandler(this.SumaDuracion_CheckedChanged);
             // 
             // button4
             // 
@@ -172,7 +186,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(134, 398);
+            this.button6.Location = new System.Drawing.Point(12, 513);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(93, 41);
             this.button6.TabIndex = 19;
@@ -185,10 +199,11 @@
             this.contLbl.BackColor = System.Drawing.Color.White;
             this.contLbl.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.contLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.contLbl.Location = new System.Drawing.Point(134, 442);
+            this.contLbl.Location = new System.Drawing.Point(12, 557);
             this.contLbl.Name = "contLbl";
             this.contLbl.Size = new System.Drawing.Size(104, 55);
             this.contLbl.TabIndex = 20;
+            this.contLbl.Click += new System.EventHandler(this.contLbl_Click);
             // 
             // Form1
             // 
@@ -213,7 +228,7 @@
         #endregion
 
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox Fecha;
+        private System.Windows.Forms.TextBox Consulta;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton DimeJugadores;
@@ -226,6 +241,7 @@
         private System.Windows.Forms.TextBox nickname;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Label contLbl;
+        private System.Windows.Forms.RadioButton SumaDuracion;
     }
 }
 

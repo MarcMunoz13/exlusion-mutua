@@ -1,4 +1,5 @@
 
+
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -9,15 +10,7 @@
 #include <mysql.h>
 #include <stdlib.h>
 #include <pthread.h>
-//#include <my_global.h>
 
-
-
-
-//#include <mysql.h>
-//#include <string.h>
-//#include <stdlib.h>
-//#include <stdio.h>
 int contador;
 
 //estructura para acceso excluyente
@@ -88,6 +81,8 @@ void *AtenderCliente (void *socket)
 		//Escribimos la peticion en la consola
 		
 		printf ("La peticion es: %s\n",peticion);
+		
+		
 		char *p = strtok(peticion, "/");//arrancar numero (puntero )
 		int codigo =  atoi (p);//convierte en entero y introduce en codigo
 		
@@ -118,7 +113,7 @@ void *AtenderCliente (void *socket)
 			
 			sprintf(consulta, "SELECT jugadores.Nombre FROM jugadores WHERE jugadores.Nickname = '%s' AND jugadores.Contrase￱a = '%s'", nick, passw);
 			
-			err=mysql_query (conn, consulta);
+			//err=mysql_query (conn, consulta);
 			if (err!=0) {
 				printf ("Error al consultar datos de la base %u %s\n",
 						mysql_errno(conn), mysql_error(conn));
@@ -138,7 +133,7 @@ void *AtenderCliente (void *socket)
 			else
 				strcpy(respuesta, "SI");
 			
-			//write (sock_conn,respuesta, strlen(respuesta));
+			
 			
 			
 			
@@ -147,71 +142,128 @@ void *AtenderCliente (void *socket)
 			write (sock_conn,respuesta, strlen(respuesta));
 			
 		}
-		/*
+		//consulta marc consulta marc consulta marc
 		else if (codigo ==2)
 		{
-		char fecha[30];
-		p= strtok(NULL, "/");
-		strcpy(fecha,p);
-		
-		char consulta[100];
-		
-		sprintf (consulta, "SELECT jugadores.Nombre FROM jugadores,partidas,datos WHERE partidas.Fecha = '%s' AND partidas.id=datos.idP AND (datos.idJ1 = jugadores.id OR datos.idJ2 = jugadores.id)",fecha);
-		
-		err=mysql_query (conn, consulta);
-		if (err!=0) {
-		printf ("Error al consultar datos de la base %u %s\n",
-		mysql_errno(conn), mysql_error(conn));
-		exit (1);
+			char fecha[30];
+			p = strtok(NULL, "/"); 
+			strcpy(fecha,p);
+			
+			char consulta[500];
+			char nombres[50];
+			
+			sprintf (consulta, "SELECT jugadores.Nombre FROM jugadores,partidas,datos WHERE partidas.Fecha = '%s' AND partidas.id=datos.idP AND (datos.idJ1 = jugadores.id OR datos.idJ2 = jugadores.id)",fecha);
+			
+			
+			
+			
+			if (err!=0) {
+				printf ("Error al consultar datos de la base %u %s\n",
+						mysql_errno(conn), mysql_error(conn));
+				exit (1);
+			}
+			
+			printf("consulta: %s\n",consulta);
+			
+			
+			err= mysql_query (conn, consulta);
+			resultado = mysql_store_result (conn);
+			row = mysql_fetch_row (resultado);
+			
+			
+			
+			if (row == NULL)
+			{
+				sprintf (resultado, "NO");
+				
+				
+				
+				
+			}
+			else 
+			{
+				
+				while (row!=NULL) 
+				{
+					
+					sprintf (nombres, row[0]);
+					
+					row = mysql_fetch_row(resultado);
+					
+					sprintf(resultado, "%s%s/ \n", resultado, nombres);
+					
+				}
+				
+				
+				
+				
+				
+			}		
+			write (sock_conn,resultado, strlen(resultado));
+			
+			
 		}
-		
-		printf("consulta: %s\n",consulta);
-		
-		err= mysql_query (conn, consulta);
-		resultado = mysql_store_result (conn);
-		row = mysql_fetch_row (resultado);
-		
-		if (row == NULL)
+		else if (codigo==3)
 		{
-		sprintf (respuesta, "NO");
-		write (sock_conn,respuesta, strlen(respuesta));
-		
+			char nombre[30];
+			p = strtok(NULL, "/"); 
+			strcpy(nombre,p);
+			
+			
+			
+			char consulta[500];
+			
+			
+			sprintf (consulta, "SELECT SUM(partidas.Duracion) FROM (partidas) WHERE partidas.Ganador = '%s'",nombre);
+			
+						
+			if (err!=0) {
+				printf ("Error al consultar datos de la base %u %s\n",
+						mysql_errno(conn), mysql_error(conn));
+				exit (1);
+			}
+			
+			printf("consulta: %s\n",consulta);
+			
+			
+			err= mysql_query (conn, consulta);
+			resultado = mysql_store_result (conn);
+			row = mysql_fetch_row (resultado);
+			
+			if (row == NULL)
+				{
+				printf("hola \n");
+				sprintf (resultado, "NO");
+			}
+			else 
+			{	
+				sprintf (resultado, row[0]);
+			}		
+			write (sock_conn,resultado, strlen(resultado));
+			
+			
+			
 		}
-		else
-		{
-		
-		while (row !=NULL) 
-		{
-		// la columna 0 contiene el nombre del jugador
-		sprintf (resultado, "%s\n", row[0]);
-		// obtenemos la siguiente fila
-		row = mysql_fetch_row (resultado);
 		
 		
-		}
-		
-		write (sock_conn,resultado, strlen(resultado));
-		
-		}
-		
-		
-		}
-		
-		*/
+	
+	
+	
+	
+	
 		
 		
 		
 		
 		
 		
-		
-		
-		if ((codigo==1)||(codigo==2))
+		if ((codigo==1)||(codigo==2)||(codigo==4))
 		{
 			pthread_mutex_lock (&mutex);//no interrumpas ahora
 			contador=contador+1;
 			pthread_mutex_unlock ( &mutex); //puedes interrumpir
 		}
+	
 		// Se acabo el servicio para este cliente
 		
 	}
@@ -245,7 +297,7 @@ int main(int argc, char **argv)
 	//htonl formatea el numero que recibe al formato necesario
 	serv_adr.sin_addr.s_addr = htonl(INADDR_ANY);
 	// escucharemos en el port 9050
-	serv_adr.sin_port = htons(9040);//puertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuerto
+	serv_adr.sin_port = htons(9065);//puertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuertopuerto
 	if (bind(sock_listen, (struct sockaddr *) &serv_adr, sizeof(serv_adr)) < 0)
 		printf ("Error al bind");
 	
@@ -259,7 +311,7 @@ int main(int argc, char **argv)
 	
 	int sockets[100];
 	pthread_t thread; //creo la estuctura de threads y declaro un vector de threads, en creador de threads incluyo el que estamos usando ahora
-	
+	i=0;
 	// Atenderemos solo 10 peticione
 	for(;;){ 
 		printf ("Escuchando\n");
@@ -267,19 +319,15 @@ int main(int argc, char **argv)
 		sock_conn = accept(sock_listen, NULL, NULL);
 		printf ("He recibido conexion\n");
 		
+		sockets[i] =sock_conn;
+		//sock_conn es el socket que usaremos para este cliente
 		
+		// Crear thead y decirle lo que tiene que hacer
 		
-		sockets[i]= sock_conn;
-		
-
-		pthread_create (&thread, NULL, AtenderCliente, &sockets[i]);//env￭o el socket del vector que acabo de crear por referencia
-		
-		i++;
-		
-		
+		pthread_create (&thread, NULL, AtenderCliente,&sockets[i]);
+		i=i+1;
 	}
-	//for (i=0; i<5; i++)
-		//pthread_join (thread[i], NULL);
+	
 	
 }
 
